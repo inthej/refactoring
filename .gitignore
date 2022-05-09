@@ -137,3 +137,12 @@ fabric.properties
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode
+
+# node modules
+node_modules/
+dist/*
+*.log
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
