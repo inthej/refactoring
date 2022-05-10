@@ -1,14 +1,12 @@
 // 공연료 청구서 출력 코드
 function statement(invoice, plays) {
-  let totalAmount = 0
   let result = `청구 내역 (고객명: ${invoice.customer})\n`
   for (let perf of invoice.performances) {
     // 청구 내역을 출력한다
     result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
-    totalAmount += amountFor(perf)
   }
 
-  result += `총액: ${usd(totalAmount / 100)}\n`
+  result += `총액: ${usd(totalAmount() / 100)}\n`
   result += `적립 포인트: ${(totalVolumeCredits())}점\n`
   return result
 
@@ -54,11 +52,19 @@ function statement(invoice, plays) {
   }
 
   function totalVolumeCredits() {
-    let volumeCredits = 0
+    let result = 0
     for (let perf of invoice.performances) {
-      volumeCredits += volumeCreditsFor(perf)
+      result += volumeCreditsFor(perf)
     }
-    return volumeCredits;
+    return result;
+  }
+
+  function totalAmount() {
+    let result = 0
+    for (let perf of invoice.performances) {
+      result += amountFor(perf)
+    }
+    return result
   }
 }
 
