@@ -5,10 +5,44 @@ function statement(invoice, plays) {
     // 청구 내역을 출력한다
     result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n`
   }
-
   result += `총액: ${usd(totalAmount() / 100)}\n`
   result += `적립 포인트: ${(totalVolumeCredits())}점\n`
   return result
+
+  function totalAmount() {
+    let result = 0
+    for (let perf of invoice.performances) {
+      result += amountFor(perf)
+    }
+    return result
+  }
+
+  function totalVolumeCredits() {
+    let result = 0
+    for (let perf of invoice.performances) {
+      result += volumeCreditsFor(perf)
+    }
+    return result;
+  }
+
+  function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency", currency: "USD", minimumFractionDigits: 2
+    }).format(aNumber / 100)
+  }
+
+  function volumeCreditsFor(aPerfomance) {
+    let result = 0
+    result += Math.max(aPerfomance.audience - 30, 0)
+    // 희극 관객 5명마다 추가 포인트를 제공한다
+    if ("comedy" === playFor(aPerfomance).type)
+      result += Math.floor(aPerfomance.audience / 5)
+    return result
+  }
+
+  function playFor(aPerformance) {
+    return plays[aPerformance.playID]
+  }
 
   function amountFor(aPerformance) {
     let result = 0
@@ -28,41 +62,6 @@ function statement(invoice, plays) {
         break;
       default:
         throw new Error(`알 수 없는 장르: ${play.type}`)
-    }
-    return result
-  }
-
-  function playFor(aPerformance) {
-    return plays[aPerformance.playID]
-  }
-
-  function volumeCreditsFor(aPerfomance) {
-    let result = 0
-    result += Math.max(aPerfomance.audience - 30, 0)
-    // 희극 관객 5명마다 추가 포인트를 제공한다
-    if ("comedy" === playFor(aPerfomance).type)
-      result += Math.floor(aPerfomance.audience / 5)
-    return result
-  }
-
-  function usd(aNumber) {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency", currency: "USD", minimumFractionDigits: 2
-    }).format(aNumber / 100)
-  }
-
-  function totalVolumeCredits() {
-    let result = 0
-    for (let perf of invoice.performances) {
-      result += volumeCreditsFor(perf)
-    }
-    return result;
-  }
-
-  function totalAmount() {
-    let result = 0
-    for (let perf of invoice.performances) {
-      result += amountFor(perf)
     }
     return result
   }
